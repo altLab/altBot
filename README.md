@@ -17,7 +17,7 @@
 - [Platform](platform.md) (3d printed; laser cut; DIY)
 - [Wheels](wheels.md) (3d printed; laser cut; DIY)
 - [Motors](motors.md) (Servos; dc; stepper)
-- [Power Source](powersource.md) ( Batteries; solar; hydrogen; ) 
+- [Power Source](power.md) ( Batteries; solar; hydrogen; ) 
 - [Power Regulator](powercircuits.md) (voltege regulators )
 
 Additionaly:
