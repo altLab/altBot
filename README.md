@@ -7,7 +7,7 @@
 - [Networking](networking.md)
 - [Mechanics](mechanics.md)
 - [Eco Conscience](eco.md)
-- Having Fun
+- [Having Fun](funtheory.md)
 
 ## Any robot wireless controlled car you want to build will have the following parts:
 
@@ -21,6 +21,7 @@
 - [Power Regulator](powercircuits.md) (voltege regulators )
 
 Additionaly:
+- [Encoders](encoders.md)
 - [Sensors](sensors.md) ( Ultrasound; infrared; temperature; light, Fpv; thermal) 
 - [Actuators](actuators.md) ( )
 
