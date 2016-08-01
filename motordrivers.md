@@ -37,7 +37,7 @@ http://blog.whatgeek.com.pt/arduino/l298-dual-h-bridge-motor-driver/
 ![TA8050P](/motordrivers/TA8050P.jpg)
 
 - *DATASHEET:* [TA8050P.pdf](http://www.bristolwatch.com/pdf/ta8050p.pdf)
-- *PRICE EBAY:* [30.cents][http://www.ebay.com/itm/20-pcs-TOS-TA8050P-Motor-DRIVER-WITH-BRAKE-FUNCTION-NEW-/151745903274?hash=item2354c2baaa:g:exMAAOSw~gRVpG3I]
+- *PRICE EBAY:* [30.cents](http://www.ebay.com/itm/20-pcs-TOS-TA8050P-Motor-DRIVER-WITH-BRAKE-FUNCTION-NEW-/151745903274?hash=item2354c2baaa:g:exMAAOSw~gRVpG3I)
 - *DEMO YOUTUBE* https://www.youtube.com/watch?v=JZD85eePUl0
 - *TYPE:* Bidirectional DC motor driver
 - *CURRENT:* 1.5 A
