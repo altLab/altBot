@@ -52,7 +52,7 @@ http://blog.whatgeek.com.pt/arduino/l298-dual-h-bridge-motor-driver/
 ![LG9110](/motordrivers/LG9110S.jpg)
 
 - *DATASHEET:* [LG9110.pdf](http://www.elecrow.com/download/datasheet-l9110.pdf)
-- *PRICE EBAY:* [20.cents][http://www.ebay.com/itm/50-PCS-LG9110S-SOP-8-L9110S-LG9110-Motor-Driver-IC-NEW-/301832458657?hash=item46469dd1a1:g:Z8cAAOSwUdlWels1]
+- *PRICE EBAY:* [20.cents](http://www.ebay.com/itm/50-PCS-LG9110S-SOP-8-L9110S-LG9110-Motor-Driver-IC-NEW-/301832458657?hash=item46469dd1a1:g:Z8cAAOSwUdlWels1)
 - *DEMO YOUTUBE* https://www.youtube.com/watch?v=kZHVJVzHs8s
 - *TYPE:* Bidirectional DC motor driver
 - *CURRENT:* 800mA
