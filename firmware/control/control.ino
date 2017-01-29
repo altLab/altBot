@@ -339,7 +339,7 @@ long EEPROMReadlong(long address) {
 }
 
 #ifdef ACCESSPOINT
-const char* ssid = "wifi-car";
+const char* ssid = "altBotAP";
 const char* password = "";
 const char* host = "esp8266fs";
 
@@ -542,7 +542,7 @@ void handleRoot() {
 <p id="dmEvent">Acc</p>
 <div id="vector"</div>
 </div>
-<script type='text/javascript' src='/wifi-carAP.js'></script>
+<script type='text/javascript' src='/script.js'></script>
 </body></html>
 )------";
 
@@ -554,6 +554,85 @@ void handleRoot() {
   digitalWrite(0, 1);
   digitalWrite(2, 1);
 }
+
+
+void handleJavascript() {
+  String message = R"------(
+var lastMove = 0;
+var version = 8;
+document.getElementById("vector").innerHTML ="vector1";
+function move_car(left, right) {
+  var now = Date.now();
+  if (lastMove + 200 < now) {  // orig. 200 ms
+     lastMove = now; 
+     var request = new XMLHttpRequest();
+     // if direction is opposite, change sign of +left and +right
+     request.open('GET', '/engines?left=' + Math.round(-left) + "&right=" + Math.round(-right), true);
+     request.send(null);
+  }
+}
+
+function move(dir) {
+    //var e = event.keyCode;
+    if (dir=='f'){ move_car(-1000, -1000);}
+    if (dir=='b'){ move_car(1000, 1000);}
+    if (dir=='l'){ move_car(-1000, 1000);}
+    if (dir=='r'){ move_car(1000, -1000);}
+}
+if (window.DeviceMotionEvent) {
+  window.addEventListener('devicemotion', deviceMotionHandler, false);
+  document.getElementById("dmEvent").innerHTML = "Accelerometer OK";
+} else {
+  document.getElementById("dmEvent").innerHTML = "Accelerometer not supported.";
+}
+
+function deviceMotionHandler(eventData) {
+  //document.getElementById("vector").innerHTML ="vector2";
+  acceleration = eventData.accelerationIncludingGravity;
+  var left = 0;
+  var right = 0;
+  if (Math.abs(acceleration.y) > 1) { // back-/forward
+    var speed = acceleration.y * 100;
+    if (acceleration.y > 0) { // add 300 to decrease dead zone
+        left = Math.min(1023, speed + acceleration.x * 40 + 300);
+        right = Math.min(1023, speed - acceleration.x * 40 + 300);
+    } else {
+        left = Math.max(-1023, speed + acceleration.x * 40 - 300);
+        right = Math.max(-1023, speed - acceleration.x * 40 - 300);       
+    }
+  } else if (Math.abs(acceleration.x) > 1) { // circle only
+    var speed = Math.min(1023, Math.abs(acceleration.x) * 100);
+    if (acceleration.x > 0) {
+      left = Math.min(1023, speed + 300);
+      right = Math.max(-1023, -speed - 300); 
+    } else {
+      left = Math.max(-1023, -speed - 300);  
+      right = Math.min(1023, speed + 300);
+    }
+  }
+  if (Math.abs(left) > 200 || Math.abs(right) > 200) { // orig. 100,100
+    move_car(left, right);
+  }
+  var direction = "stop";
+  // if direction is opposite, change sign of +left and +right
+  var acc_x = Math.round(acceleration.x);
+  var acc_y = Math.round(acceleration.y);
+  var acc_z = Math.round(acceleration.z);
+  var leftD = Math.round(-left);
+  var rightD = Math.round(-right);
+
+  direction = "[" + acc_x + "," + acc_y + "," + acc_z  + "]<BR/>" + leftD + ", " + rightD + "<BR/>version: " + version; 
+  document.getElementById("vector").innerHTML =direction;
+  //document.getElementById("block").style.fontSize = "x-large";
+  //getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+}
+)------";
+
+  server.send ( 200, "text/html", message );
+
+}
+
+
 
 void error404() {
 
@@ -711,10 +790,11 @@ void setup() {
   //use it to load content from SPIFFS
   server.onNotFound([]() {
     if (!handleFileRead(server.uri()))
-      server.send(404, "text/plain", "FileNotFound");
+      server.send(404, "text/plain", "File Not Found");
   });
 
   server.on ( "/", handleRoot );
+  server.on ( "/script.js", handleJavascript );
 //  server.on ( "/index.html", handleRoot );
   server.on ( "/engines", handleMotor );
 
