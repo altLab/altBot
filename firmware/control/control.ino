@@ -137,25 +137,7 @@ void setup() {
   
   server.on ( "/", handleRoot );
   server.on ( "/engines", handleMotor );
-
-  server.on("/pin", HTTP_GET, [](){
-    String number_string=server.arg("num");
-    String value_string=server.arg("val");
-    DBG_OUTPUT_PORT.println("Set Pin: " + number_string + " to " + value_string);
-    int number = number_string.toInt();
-    int value = value_string.toInt();
-    if (number>0) {
-//  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
-//  delay(1000);                       // wait for a second
-//        digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-//  delay(1000);                       // wait for a second
-
-//      pinMode(number,OUTPUT);
-      digitalWrite(number,value);
-      server.send(200, "text/plain", "Pin " + number_string + " is now " + value_string);
-    }
-    });
-  
+ 
   //--------------- Start the server
   server.begin();
   DBG_OUTPUT_PORT.println("Server started");
