@@ -138,15 +138,6 @@ void setup() {
   server.on ( "/", handleRoot );
   server.on ( "/engines", handleMotor );
 
-  server.on("/all", HTTP_GET, [](){
-    String json = "{";
-    json += "\"heap\":"+String(ESP.getFreeHeap());
-    json += ", \"analog\":"+String(analogRead(A0));
-    json += ", \"gpio\":"+String((uint32_t)(((GPI | GPO) & 0xFFFF) | ((GP16I & 0x01) << 16)));
-    json += "}";
-    server.send(200, "text/json", json);
-  });
-  
   server.on("/pin", HTTP_GET, [](){
     String number_string=server.arg("num");
     String value_string=server.arg("val");
