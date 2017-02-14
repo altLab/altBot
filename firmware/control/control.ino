@@ -58,10 +58,10 @@ const short int ESP_LED = 16;  //GPIO16
 // Access Point mode for car use, Station Access mode for software development.
 // comment next line for Station Access to WiFi router
 
-int motorASpeed = 1023;
-int motorBSpeed = 1023;
-int motorAForward = 1;
-int motorBForward = 1;
+int motor_left_speed = 1023;
+int motor_right_speed = 1023;
+int motor_left_dir = 1;
+int motor_right_dir = 1;
 
 // Create an instance of the server
 // specify the port to listen on as an argument
@@ -86,11 +86,8 @@ void handleRoot() {
 
   server.send ( 200, "text/html", message );
 
-  // TODO: WTF?
-  analogWrite(5, 0);
-  analogWrite(4, 0);
-  digitalWrite(0, 1);
-  digitalWrite(2, 1);
+  // stop all motors when user reloads index page
+  motor_all_stop();
 }
 
 
@@ -142,8 +139,7 @@ void setup() {
   server.begin();
   DBG_OUTPUT_PORT.println("Server started");
 
-  initMotors();
-  
+  motor_init();
   
   // show READY for use
   digitalWrite(ESP_LED, LOW);
