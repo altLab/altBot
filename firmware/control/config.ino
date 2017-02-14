@@ -3,7 +3,7 @@
 //
 
 boolean ReadConfig() {
-  DBG_OUTPUT_PORT.println("Reading Configuration");
+  debug_println("Reading Configuration");
   if (EEPROM.read(0) == 'a' && EEPROM.read(1) == 'l'  && EEPROM.read(2) == 't' && 
       EEPROM.read(3) == 'b' && EEPROM.read(4) == 'o'  && EEPROM.read(5) == 't' && 
       EEPROM.read(6) == 'C' && EEPROM.read(7) == 'F'  && EEPROM.read(8) == 'G' ) {
@@ -33,7 +33,7 @@ boolean ReadConfig() {
 }
 
 void WriteConfig() {
-  DBG_OUTPUT_PORT.println("Writing Config");
+  debug_println("Writing Config");
   EEPROM.write(0,'a');
   EEPROM.write(1,'l');
   EEPROM.write(2,'t');

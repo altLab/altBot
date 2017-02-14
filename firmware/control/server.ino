@@ -14,7 +14,7 @@ inline void server_init() {
   
   server.begin();
   
-  DBG_OUTPUT_PORT.println("Server started");
+  debug_println("Server started");
 }
 
 
@@ -43,7 +43,7 @@ void server_motor_handler() {
   int left_speed = leftText.toInt();
   int right_speed = rightText.toInt();
 
-  DBG_OUTPUT_PORT.println("[" + leftText + "][" + rightText + "]");
+  debug_println ("Motor Handler: [" + leftText + "][" + rightText + "]");
 
   // compute motor direction from speed value
   state.motor_left_dir = ((left_speed > 0) ? DIR_FWD : DIR_BAK);

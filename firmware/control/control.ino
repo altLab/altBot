@@ -26,8 +26,6 @@
 #include <ESP8266mDNS.h>
 #include <EEPROM.h>
 
-#define DBG_OUTPUT_PORT Serial
-
 // Setup config file struct with default values 
 struct _config {
   boolean ap_mode = true;
@@ -52,43 +50,38 @@ const short int ESP_LED = 16;  //GPIO16
 
 void setup() {
 
-  // Start debug console
-  DBG_OUTPUT_PORT.begin(115200);
-  DBG_OUTPUT_PORT.print("\n");
-  DBG_OUTPUT_PORT.setDebugOutput(true);
-  /// LED_user setup and test, for debug purpose.
-  DumpESPinfo();
+  // Start serial console
+  Serial.begin(115200);
   
-  pinMode(ESP_LED, OUTPUT);
-  digitalWrite(ESP_LED, LOW);
-  delay(100); // ms
-  digitalWrite(ESP_LED, HIGH);
-  delay(300); // ms, pause because of AP mode
+  // init debug and print out ESP device info
+  debug_init();
+  debug_esp_info();
+  debug_blink();
 
   // TODO: Read config from EEPROM
 
   // Connect to WiFi network
- 
   if (config.ap_mode) {
     WiFi.mode(WIFI_AP);
     WiFi.softAP(config.ssid.c_str(), config.password.c_str());
     IPAddress myIP = WiFi.softAPIP();
-    DBG_OUTPUT_PORT.print("AP IP address: ");
-    DBG_OUTPUT_PORT.println(myIP);
+    debug_print ("AP IP address: ");
+    debug_println (myIP);
   } else {
     // Station, access to router
     WiFi.begin(config.ssid.c_str(), config.password.c_str());
   
     while (WiFi.status() != WL_CONNECTED) {
-      delay(500);
-      DBG_OUTPUT_PORT.print(".");
+      debug_blink();
+      debug_print(".");
     }
-    DBG_OUTPUT_PORT.println("");
-    DBG_OUTPUT_PORT.println("WiFi connected");
-    // Print the IP address
-    DBG_OUTPUT_PORT.println(WiFi.localIP());
+    
+    debug_println("");
+    debug_print("WiFi connected with IP address ");
+    debug_println(WiFi.localIP());
   }
 
+  // Start MDNS responder
   MDNS.begin(config.device_id.c_str());
 
   // Initialize server and motors
@@ -96,9 +89,7 @@ void setup() {
   motor_init();
   
   // show READY for use
-  digitalWrite(ESP_LED, LOW);
-  delay(300); // ms
-  digitalWrite(ESP_LED, HIGH);
+  debug_blink();
 }
 
 void loop() {
