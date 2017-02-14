@@ -63,36 +63,6 @@ int motor_right_speed = 1023;
 int motor_left_dir = 1;
 int motor_right_dir = 1;
 
-// Create an instance of the server
-// specify the port to listen on as an argument
-ESP8266WebServer server(80);
-
-//------------------- WiFi Car application -----------
-void handleRoot() {
-  String message = R"------(
-<!DOCTYPE html><html><head>
-</head><body>
-<div id="block" style="font-size:24pt">
-<a href='#' onclick='move("f");'>forward</a><BR/>
-<a href='#' onclick='move("b");'>backwards</a><BR/>
-<a href='#' onclick='move("l");'>left</a><BR/>
-<a href='#' onclick='move("r");'>right</a><BR/>
-<p id="dmEvent">Acc</p>
-<div id="vector"</div>
-</div>
-<script type='text/javascript' src='/wifi-carAP.js'></script>
-</body></html>
-)------";
-
-  server.send ( 200, "text/html", message );
-
-  // stop all motors when user reloads index page
-  motor_all_stop();
-}
-
-
-
-
 //------------------ setup ---------------
 void setup() {
   DBG_OUTPUT_PORT.begin(115200);
@@ -130,15 +100,8 @@ void setup() {
 
   MDNS.begin(host);
 
-  //---------------- Server init
-  
-  server.on ( "/", handleRoot );
-  server.on ( "/engines", handleMotor );
- 
-  //--------------- Start the server
-  server.begin();
-  DBG_OUTPUT_PORT.println("Server started");
-
+  // Initialize server and motors
+  server_init();
   motor_init();
   
   // show READY for use
@@ -148,6 +111,6 @@ void setup() {
 }
 
 void loop() {
-  server.handleClient();
-  delay(1);
+  server_step();
+  yield();
 }

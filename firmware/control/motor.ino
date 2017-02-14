@@ -1,3 +1,6 @@
+//
+// Motor control functions
+//
 
 // Human readable names for motor pins
 #define PWM_PIN_LEFT 5
@@ -45,32 +48,5 @@ inline void motor_init() {
   pinMode(DIR_PIN_RIGHT, OUTPUT);
 
   motor_all_stop();
-}
-
-void handleMotor() {
-  
-  // parse request parameters
-  String leftText = server.arg(0);
-  String rightText = server.arg(1);
-  int left_speed = leftText.toInt();
-  int right_speed = rightText.toInt();
-
-  DBG_OUTPUT_PORT.println("[" + leftText + "][" + rightText + "]");
-
-  // compute motor direction from speed value
-  motor_left_dir = ((left_speed > 0) ? DIR_FWD : DIR_BAK);
-  motor_right_dir = ((right_speed > 0) ? DIR_FWD : DIR_BAK);
-
-  // move motors
-  motor_left_move (motor_left_dir, abs (left_speed));
-  motor_right_move (motor_right_dir, abs (right_speed));
-
-  // every 200 ms a new motion value
-  delay(200);  
-  motor_all_stop();
-
-  // send response to client
-  String message = "OK";
-  server.send ( 200, "text/html", message );
 }
 
