@@ -2,14 +2,14 @@
 // EEPROM utility functions
 //
 
-void WriteStringToEEPROM(int beginaddress, String string) {
+void eeprom_write_str (int beginaddress, String string) {
   char charBuf[string.length()+1];
   string.toCharArray(charBuf, string.length()+1);
   for (int t=  0; t<sizeof(charBuf);t++) {
     EEPROM.write(beginaddress + t,charBuf[t]);
   }
 }
-String  ReadStringFromEEPROM(int beginaddress) {
+String eeprom_read_str (int beginaddress) {
   byte counter=0;
   char rChar;
   String retString = "";
@@ -22,7 +22,8 @@ String  ReadStringFromEEPROM(int beginaddress) {
   }
   return retString;
 }
-void EEPROMWritelong(int address, long value) {
+
+void eeprom_write_long (int address, long value) {
   byte four = (value & 0xFF);
   byte three = ((value >> 8) & 0xFF);
   byte two = ((value >> 16) & 0xFF);
@@ -35,7 +36,7 @@ void EEPROMWritelong(int address, long value) {
   EEPROM.write(address + 3, one);
 }
 
-long EEPROMReadlong(long address) {
+long eeprom_read_long (long address) {
   //Read the 4 bytes from the eeprom memory.
   long four = EEPROM.read(address);
   long three = EEPROM.read(address + 1);

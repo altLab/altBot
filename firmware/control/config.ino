@@ -22,9 +22,9 @@ boolean ReadConfig() {
     config.gateway[1] = EEPROM.read(41);
     config.gateway[2] = EEPROM.read(42);
     config.gateway[3] = EEPROM.read(43);
-    config.ssid = ReadStringFromEEPROM(64);
-    config.password = ReadStringFromEEPROM(96);
-    config.device_id = ReadStringFromEEPROM(128);
+    config.ssid = eeprom_read_str(64);
+    config.password = eeprom_read_str(96);
+    config.device_id = eeprom_read_str(128);
     return true;
   } else {
     Serial.println("Configurarion NOT FOUND!!!!");
@@ -61,9 +61,9 @@ void WriteConfig() {
   EEPROM.write(42,config.gateway[2]);
   EEPROM.write(43,config.gateway[3]);
 
-  WriteStringToEEPROM(64,config.ssid);
-  WriteStringToEEPROM(96,config.password);
-  WriteStringToEEPROM(128,config.device_id);
+  eeprom_write_str(64,config.ssid);
+  eeprom_write_str(96,config.password);
+  eeprom_write_str(128,config.device_id);
 
   EEPROM.commit();
 }
