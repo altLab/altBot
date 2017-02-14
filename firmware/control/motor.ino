@@ -3,10 +3,10 @@
 //
 
 // Human readable names for motor pins
-#define PWM_PIN_LEFT 5
-#define PWM_PIN_RIGHT 4
-#define DIR_PIN_LEFT 0
-#define DIR_PIN_RIGHT 2
+#define PWM_PIN_LEFT D1
+#define PWM_PIN_RIGHT D2
+#define DIR_PIN_LEFT D3
+#define DIR_PIN_RIGHT D4
 
 // Human readable names for motor direction
 #define DIR_FWD 1
