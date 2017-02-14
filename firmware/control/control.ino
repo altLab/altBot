@@ -26,48 +26,9 @@
 #include <ESP8266mDNS.h>
 #include <EEPROM.h>
 
-#include "FS.h"
-
 #define ACCESSPOINT
 
 #define DBG_OUTPUT_PORT Serial
-
-
-// /mode/8/o
-// /digital/8/1
-// /analog/6/123
-// /id
-
-/*
- * Servidor:
- * Paginas HTML
- * Comandos:
- *  left
- *  right
- *  forward
- *  backward
- *  mode
- * Paginas JSON:
- *  informacao
- * Upload
- *  manipulacao do FS
- *  
- * Settings: 
- *  Modo AP ou Host
- *  SSID
- *  Pass
- *  
- * Estatico:
- *  IP / Mask / Gateway
- *  
- * Hostname:
- * 
- * 
- */
-
-
-
-#define AdminTimeOut 180 // Defines the time in seconds, when the admin mode will be diabled 
 
 struct strConfig {
   String ssid;
@@ -93,7 +54,6 @@ const char* password = ".......";
 #endif
 
 const short int BUILTIN_LED2 = 16;  //GPIO16
-const char* serverIndex = "<form method='POST' action='/update' enctype='multipart/form-data'><input type='file' name='update'><input type='submit' value='Update'></form>";
 
 // Access Point mode for car use, Station Access mode for software development.
 // comment next line for Station Access to WiFi router
@@ -106,10 +66,6 @@ int motorBForward = 1;
 // Create an instance of the server
 // specify the port to listen on as an argument
 ESP8266WebServer server(80);
-
-//holds the current upload
-File fsUploadFile;
-String fileName;
 
 //------------------- WiFi Car application -----------
 void handleRoot() {
@@ -137,10 +93,7 @@ void handleRoot() {
   digitalWrite(2, 1);
 }
 
-void error404() {
 
-
-}
 
 
 //------------------ setup ---------------
@@ -186,72 +139,7 @@ void setup() {
 
 
   //---------------- Server init
-  // list directory
-  server.on("/list", HTTP_GET, handleFileList);
   
-  // create file
-  server.on("/create", handleFileCreate);
-  //delete file
-  server.on("/delete", HTTP_GET, handleFileDelete);
-  // called after file upload
-  server.on("/edit", HTTP_POST, [](){ server.send(200, "text/plain", ""); }, handleFileUpload);
-  
-  // Format Flash ROM - too dangerous!
-  // server.on ( "/format", handleFormat );
-  
-  // get filename from client for upload; setup is also handle
-  server.on("/upload", HTTP_GET, []() {
-	server.sendHeader("Connection", "close");
-	server.sendHeader("Access-Control-Allow-Origin", "*");
-	server.send(200, "text/html", serverIndex);
-  });
-
-  server.onFileUpload([]() {  // called several times from Parsing.cpp while upload
-    if (server.uri() != "/update") return;
-    // get file
-    HTTPUpload& upload = server.upload();
-    DBG_OUTPUT_PORT.print("status: "); 
-    DBG_OUTPUT_PORT.println( (int)upload.status);  // need 2 commands to work!
-    if (upload.status == UPLOAD_FILE_START) {
-      fileName = upload.filename;
-      DBG_OUTPUT_PORT.println("Upload Name: " + fileName);
-      String path = "/" + fileName;
-      fsUploadFile = SPIFFS.open(path, "w");
-      // already existing file will be overwritten!
-    } else if (upload.status == UPLOAD_FILE_WRITE) {
-      if (fsUploadFile)
-        fsUploadFile.write(upload.buf, upload.currentSize);
-      DBG_OUTPUT_PORT.println(fileName + " size: " + upload.currentSize);
-    } else if (upload.status == UPLOAD_FILE_END) {
-      DBG_OUTPUT_PORT.print("Upload Size: ");
-      DBG_OUTPUT_PORT.println(upload.totalSize);  // need 2 commands to work!
-      if (fsUploadFile)
-        fsUploadFile.close();
-    }
-    yield();
-  });
-
-  server.on("/update", HTTP_POST, []() {
-    server.sendHeader("Connection", "close");
-    server.sendHeader("Access-Control-Allow-Origin", "*");
-    server.send(200, "text/plain", (Update.hasError()) ? "FAIL" : "OK");
-    // ESP.restart();  // not needed
-    DBG_OUTPUT_PORT.println("dir SPIFFS");
-    Dir dir = SPIFFS.openDir("/");
-    while (dir.next()) {
-      fileName = dir.fileName();
-      size_t fileSize = dir.fileSize();
-      DBG_OUTPUT_PORT.printf("FS File: %s, size: %s\n", fileName.c_str(), formatBytes(fileSize).c_str());
-    }
-  });
-
-  //called when the url is not defined here
-  //use it to load content from SPIFFS
-  server.onNotFound([]() {
-    if (!handleFileRead(server.uri()))
-      server.send(404, "text/plain", "FileNotFound");
-  });
-
   server.on ( "/", handleRoot );
 //  server.on ( "/index.html", handleRoot );
   server.on ( "/engines", handleMotor );
@@ -290,32 +178,7 @@ void setup() {
 
   initMotors();
   
-  // show the SPIFFS contents, name and size
-  if (!SPIFFS.begin()) {
-    DBG_OUTPUT_PORT.println("SPIFFS failed, needs formatting");
-  } else {
-    DBG_OUTPUT_PORT.println("dir SPIFFS");
-    Dir dir = SPIFFS.openDir("/");
-    while (dir.next()) {
-      fileName = dir.fileName();
-      size_t fileSize = dir.fileSize();
-      DBG_OUTPUT_PORT.printf("FS File: %s, size: %s\n", fileName.c_str(), formatBytes(fileSize).c_str());
-    }
-    DBG_OUTPUT_PORT.println();
-    FSInfo fs_info;
-    if (!SPIFFS.info(fs_info)) {
-      DBG_OUTPUT_PORT.println("fs_info failed");
-    } else {
-      DBG_OUTPUT_PORT.printf("Total: %u, Used: %u, Block: %u, Page: %u, Max open files: %u, Max path len: %u\n",
-                    fs_info.totalBytes,
-                    fs_info.usedBytes,
-                    fs_info.blockSize,
-                    fs_info.pageSize,
-                    fs_info.maxOpenFiles,
-                    fs_info.maxPathLength
-                   );
-    }
-  }
+  
   // show READY for use
   digitalWrite(BUILTIN_LED2, LOW);
   delay(300); // ms
