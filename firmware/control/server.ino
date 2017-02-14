@@ -46,12 +46,12 @@ void server_motor_handler() {
   DBG_OUTPUT_PORT.println("[" + leftText + "][" + rightText + "]");
 
   // compute motor direction from speed value
-  motor_left_dir = ((left_speed > 0) ? DIR_FWD : DIR_BAK);
-  motor_right_dir = ((right_speed > 0) ? DIR_FWD : DIR_BAK);
+  state.motor_left_dir = ((left_speed > 0) ? DIR_FWD : DIR_BAK);
+  state.motor_right_dir = ((right_speed > 0) ? DIR_FWD : DIR_BAK);
 
   // move motors
-  motor_left_move (motor_left_dir, abs (left_speed));
-  motor_right_move (motor_right_dir, abs (right_speed));
+  motor_left_move (state.motor_left_dir, abs (left_speed));
+  motor_right_move (state.motor_right_dir, abs (right_speed));
 
   // every 200 ms a new motion value
   delay(200);  

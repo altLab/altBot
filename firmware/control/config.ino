@@ -10,21 +10,21 @@ boolean ReadConfig() {
     Serial.println("Configurarion Found!");
     config.dhcp =   EEPROM.read(16);
 
-    config.IP[0] = EEPROM.read(32);
-    config.IP[1] = EEPROM.read(33);
-    config.IP[2] = EEPROM.read(34);
-    config.IP[3] = EEPROM.read(35);
-    config.Netmask[0] = EEPROM.read(36);
-    config.Netmask[1] = EEPROM.read(37);
-    config.Netmask[2] = EEPROM.read(38);
-    config.Netmask[3] = EEPROM.read(39);
-    config.Gateway[0] = EEPROM.read(40);
-    config.Gateway[1] = EEPROM.read(41);
-    config.Gateway[2] = EEPROM.read(42);
-    config.Gateway[3] = EEPROM.read(43);
+    config.ip[0] = EEPROM.read(32);
+    config.ip[1] = EEPROM.read(33);
+    config.ip[2] = EEPROM.read(34);
+    config.ip[3] = EEPROM.read(35);
+    config.netmask[0] = EEPROM.read(36);
+    config.netmask[1] = EEPROM.read(37);
+    config.netmask[2] = EEPROM.read(38);
+    config.netmask[3] = EEPROM.read(39);
+    config.gateway[0] = EEPROM.read(40);
+    config.gateway[1] = EEPROM.read(41);
+    config.gateway[2] = EEPROM.read(42);
+    config.gateway[3] = EEPROM.read(43);
     config.ssid = ReadStringFromEEPROM(64);
     config.password = ReadStringFromEEPROM(96);
-    config.DeviceName = ReadStringFromEEPROM(128);
+    config.device_id = ReadStringFromEEPROM(128);
     return true;
   } else {
     Serial.println("Configurarion NOT FOUND!!!!");
@@ -46,25 +46,24 @@ void WriteConfig() {
 
   EEPROM.write(16,config.dhcp);
 
-  EEPROM.write(32,config.IP[0]);
-  EEPROM.write(33,config.IP[1]);
-  EEPROM.write(34,config.IP[2]);
-  EEPROM.write(35,config.IP[3]);
+  EEPROM.write(32,config.ip[0]);
+  EEPROM.write(33,config.ip[1]);
+  EEPROM.write(34,config.ip[2]);
+  EEPROM.write(35,config.ip[3]);
 
-  EEPROM.write(36,config.Netmask[0]);
-  EEPROM.write(37,config.Netmask[1]);
-  EEPROM.write(38,config.Netmask[2]);
-  EEPROM.write(39,config.Netmask[3]);
+  EEPROM.write(36,config.netmask[0]);
+  EEPROM.write(37,config.netmask[1]);
+  EEPROM.write(38,config.netmask[2]);
+  EEPROM.write(39,config.netmask[3]);
 
-  EEPROM.write(40,config.Gateway[0]);
-  EEPROM.write(41,config.Gateway[1]);
-  EEPROM.write(42,config.Gateway[2]);
-  EEPROM.write(43,config.Gateway[3]);
-
+  EEPROM.write(40,config.gateway[0]);
+  EEPROM.write(41,config.gateway[1]);
+  EEPROM.write(42,config.gateway[2]);
+  EEPROM.write(43,config.gateway[3]);
 
   WriteStringToEEPROM(64,config.ssid);
   WriteStringToEEPROM(96,config.password);
-  WriteStringToEEPROM(128,config.DeviceName);
+  WriteStringToEEPROM(128,config.device_id);
 
   EEPROM.commit();
 }

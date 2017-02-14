@@ -26,79 +26,70 @@
 #include <ESP8266mDNS.h>
 #include <EEPROM.h>
 
-#define ACCESSPOINT
-
 #define DBG_OUTPUT_PORT Serial
 
-struct strConfig {
-  String ssid;
-  String password;
-  byte  IP[4];
-  byte  Netmask[4];
-  byte  Gateway[4];
+// Setup config file struct with default values 
+struct _config {
+  boolean ap_mode = true;
+  String ssid = "altBot";
+  String password = "altBot";
+  byte  ip[4];
+  byte  netmask[4];
+  byte  gateway[4];
   boolean dhcp;
-  String DeviceName;
-  byte motorMode;
-  uint16_t motorSpeed;
+  String device_id = "altBot";
 } config;
 
-#ifdef ACCESSPOINT
-const char* ssid = "wifi-car";
-const char* password = "";
-const char* host = "esp8266fs";
-
-#else
-// Station Access mode, adopt strings to your WiFi router
-const char* ssid = ".......";
-const char* password = ".......";
-#endif
+// Setup runtime state struct with default values
+struct _state {
+  int motor_left_speed = 1023;
+  int motor_right_speed = 1023;
+  int motor_left_dir = 1;
+  int motor_right_dir = 1;
+} state;
 
 const short int ESP_LED = 16;  //GPIO16
 
-// Access Point mode for car use, Station Access mode for software development.
-// comment next line for Station Access to WiFi router
-
-int motor_left_speed = 1023;
-int motor_right_speed = 1023;
-int motor_left_dir = 1;
-int motor_right_dir = 1;
-
-//------------------ setup ---------------
 void setup() {
+
+  // Start debug console
   DBG_OUTPUT_PORT.begin(115200);
   DBG_OUTPUT_PORT.print("\n");
   DBG_OUTPUT_PORT.setDebugOutput(true);
   /// LED_user setup and test, for debug purpose.
   DumpESPinfo();
+  
   pinMode(ESP_LED, OUTPUT);
   digitalWrite(ESP_LED, LOW);
-  
   delay(100); // ms
   digitalWrite(ESP_LED, HIGH);
   delay(300); // ms, pause because of AP mode
 
-  // Connect to WiFi network
-#ifdef ACCESSPOINT
-  WiFi.mode(WIFI_AP);
-  WiFi.softAP(ssid, password);
-  IPAddress myIP = WiFi.softAPIP();
-  DBG_OUTPUT_PORT.print("AP IP address: ");
-  DBG_OUTPUT_PORT.println(myIP);
-#else
-  // Station, access to router
-  WiFi.begin(ssid, password);
-  
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    DBG_OUTPUT_PORT.print(".");
-  }
-  DBG_OUTPUT_PORT.println("");
-  DBG_OUTPUT_PORT.println("WiFi connected");
-  // Print the IP address
-  DBG_OUTPUT_PORT.println(WiFi.localIP());
-#endif
+  // TODO: Read config from EEPROM
 
-  MDNS.begin(host);
+  // Connect to WiFi network
+ 
+  if (config.ap_mode) {
+    WiFi.mode(WIFI_AP);
+    WiFi.softAP(config.ssid.c_str(), config.password.c_str());
+    IPAddress myIP = WiFi.softAPIP();
+    DBG_OUTPUT_PORT.print("AP IP address: ");
+    DBG_OUTPUT_PORT.println(myIP);
+  } else {
+    // Station, access to router
+    WiFi.begin(config.ssid.c_str(), config.password.c_str());
+  
+    while (WiFi.status() != WL_CONNECTED) {
+      delay(500);
+      DBG_OUTPUT_PORT.print(".");
+    }
+    DBG_OUTPUT_PORT.println("");
+    DBG_OUTPUT_PORT.println("WiFi connected");
+    // Print the IP address
+    DBG_OUTPUT_PORT.println(WiFi.localIP());
+  }
+
+  MDNS.begin(config.device_id.c_str());
 
   // Initialize server and motors
   server_init();
