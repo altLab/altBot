@@ -53,7 +53,7 @@ const char* ssid = ".......";
 const char* password = ".......";
 #endif
 
-const short int BUILTIN_LED2 = 16;  //GPIO16
+const short int ESP_LED = 16;  //GPIO16
 
 // Access Point mode for car use, Station Access mode for software development.
 // comment next line for Station Access to WiFi router
@@ -103,11 +103,11 @@ void setup() {
   DBG_OUTPUT_PORT.setDebugOutput(true);
   /// LED_user setup and test, for debug purpose.
   DumpESPinfo();
-  pinMode(BUILTIN_LED2, OUTPUT);
-  digitalWrite(BUILTIN_LED2, LOW);
+  pinMode(ESP_LED, OUTPUT);
+  digitalWrite(ESP_LED, LOW);
   
   delay(100); // ms
-  digitalWrite(BUILTIN_LED2, HIGH);
+  digitalWrite(ESP_LED, HIGH);
   delay(300); // ms, pause because of AP mode
 
   // Connect to WiFi network
@@ -132,16 +132,10 @@ void setup() {
 #endif
 
   MDNS.begin(host);
-  DBG_OUTPUT_PORT.print("Open http://");
-  DBG_OUTPUT_PORT.print(host);
-  DBG_OUTPUT_PORT.println(".local/edit to see the file browser");
-
-
 
   //---------------- Server init
   
   server.on ( "/", handleRoot );
-//  server.on ( "/index.html", handleRoot );
   server.on ( "/engines", handleMotor );
 
   server.on("/all", HTTP_GET, [](){
@@ -151,7 +145,6 @@ void setup() {
     json += ", \"gpio\":"+String((uint32_t)(((GPI | GPO) & 0xFFFF) | ((GP16I & 0x01) << 16)));
     json += "}";
     server.send(200, "text/json", json);
-    json = String();
   });
   
   server.on("/pin", HTTP_GET, [](){
@@ -180,9 +173,9 @@ void setup() {
   
   
   // show READY for use
-  digitalWrite(BUILTIN_LED2, LOW);
+  digitalWrite(ESP_LED, LOW);
   delay(300); // ms
-  digitalWrite(BUILTIN_LED2, HIGH);
+  digitalWrite(ESP_LED, HIGH);
 }
 
 void loop() {
