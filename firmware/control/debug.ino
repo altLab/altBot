@@ -26,10 +26,6 @@ inline void debug_println (const Printable &msg) {
   Serial.println (msg);
 }
 
-inline void debug_printf () {
-  
-}
-
 inline void debug_blink() {
   digitalWrite(ESP_LED, LOW);
   delay(100);
