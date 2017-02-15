@@ -28,7 +28,7 @@ script:
   - arduino -v --verbose-build --verify --board $BOARD $PWD/firmware/$SOURCE/$SOURCE.ino;
 notifications:
   email:
-    recipients:
-      - jpralves@gmail.com
+#    recipients:
+#      - jpralves@gmail.com
     on_success: change
     on_failure: change
