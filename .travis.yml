@@ -12,14 +12,14 @@ install:
 #  - ln -s $PWD /usr/local/share/arduino/libraries/WiFiManager  
   - arduino --pref "boardsmanager.additional.urls=http://arduino.esp8266.com/stable/package_esp8266com_index.json" --save-prefs
   - arduino --install-boards esp8266:esp8266
-  - arduino --board esp8266:esp8266:generic --save-prefs
+  - arduino --board esp8266:esp8266:nodemcu --save-prefs
   - arduino --pref "compiler.warning_level=all" --save-prefs
 script:
   - "echo $PWD"
   - "echo $HOME"
   - "ls $PWD"
 #  - source $TRAVIS_BUILD_DIR/travis/common.sh
-  - arduino -v --verbose-build --board esp8266:esp8266:generic --verify $PWD/firmware/control/control.ino
+  - arduino -v --verbose-build --board esp8266:esp8266:nodemcu --verify $PWD/firmware/control/control.ino
 #  - arduino --verify --board arduino:avr:uno $PWD/examples/IncomingCall/IncomingCall.ino
 #  - arduino --verify --board arduino:avr:uno $PWD/examples/AdafruitIO_GPS/AdafruitIO_GPS.ino
 after_success:
