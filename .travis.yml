@@ -1,29 +1,31 @@
-language: c
-sudo: true
+language: generic
+sudo: false
+env:
+  global:
+    - IDE_VERSION=1.8.1
+  matrix:
+    - SOURCE="control" BOARD="esp8266:esp8266:nodemcuv2:FlashSize=4M3M,CpuFrequency=80"
+    - SOURCE="motor_test" BOARD="esp8266:esp8266:nodemcuv2:FlashSize=4M3M,CpuFrequency=80"
+    - SOURCE="pin_test" BOARD="esp8266:esp8266:nodemcuv2:FlashSize=4M3M,CpuFrequency=80"
 before_install:
   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_1.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :1 -ac -screen 0 1280x1024x16"
   - sleep 3
   - export DISPLAY=:1.0
-  - wget http://downloads.arduino.cc/arduino-1.8.1-linux64.tar.xz
-  - tar xf arduino-1.8.1-linux64.tar.xz
-  - sudo mv arduino-1.8.1 /usr/local/share/arduino
-  - sudo ln -s /usr/local/share/arduino/arduino /usr/local/bin/arduino
+  - wget http://downloads.arduino.cc/arduino-$IDE_VERSION-linux64.tar.xz
+  - tar xf arduino-$IDE_VERSION-linux64.tar.xz
+  - export PATH=$PATH:$HOME/arduino-$IDE_VERSION
+  - if [[ "$BOARD" =~ "esp8266:esp8266:" ]]; then
+      arduino --pref "boardsmanager.additional.urls=http://arduino.esp8266.com/stable/package_esp8266com_index.json" --install-boards esp8266:esp8266;
+      arduino --pref "boardsmanager.additional.urls=" --save-prefs;
+    fi
 install:
 #  - ln -s $PWD /usr/local/share/arduino/libraries/WiFiManager  
-  - arduino --pref "boardsmanager.additional.urls=http://arduino.esp8266.com/stable/package_esp8266com_index.json" --save-prefs
-  - arduino --install-boards esp8266:esp8266
-  - arduino --board esp8266:esp8266:nodemcuv2 --save-prefs
-  - arduino --pref "compiler.warning_level=all" --save-prefs
+#  - arduino --pref "boardsmanager.additional.urls=http://arduino.esp8266.com/stable/package_esp8266com_index.json" --save-prefs
+#  - arduino --install-boards esp8266:esp8266
+#  - arduino --board esp8266:esp8266:nodemcuv2 --save-prefs
+#  - arduino --pref "compiler.warning_level=all" --save-prefs
 script:
-  - "echo $PWD"
-  - "echo $HOME"
-  - "ls $PWD"
-#  - source $TRAVIS_BUILD_DIR/travis/common.sh
-  - arduino -v --verbose-build --board esp8266:esp8266:nodemcuv2 --verify $PWD/firmware/control/control.ino
-#  - arduino --verify --board arduino:avr:uno $PWD/examples/IncomingCall/IncomingCall.ino
-#  - arduino --verify --board arduino:avr:uno $PWD/examples/AdafruitIO_GPS/AdafruitIO_GPS.ino
-after_success:
-  - bash <(curl -s https://codecov.io/bash)  
+  - arduino -v --verbose-build --verify --board $BOARD $PWD/firmware/$SOURCE/$SOURCE.ino;
 notifications:
   email:
     recipients:
