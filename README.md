@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/altLab/altBot.png)](https://travis-ci.org/altLab/altBot)
+[![Coverage Status](https://coveralls.io/repos/github/altLab/altBot/badge.svg?branch=master)](https://coveralls.io/github/altLab/altBot?branch=master)
 
 altBot
 ======
