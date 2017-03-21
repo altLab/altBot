@@ -14,6 +14,12 @@ before_install:
   - wget http://downloads.arduino.cc/arduino-$IDE_VERSION-linux64.tar.xz
   - tar xf arduino-$IDE_VERSION-linux64.tar.xz
   - export PATH=$PATH:$PWD/arduino-$IDE_VERSION
+  - mkdir ~/Arduino/
+  - cd ~/Arduino/
+  - git clone https://github.com/jpralves/crc16.git
+  - git clone https://github.com/jpralves/keyvalues.git
+  #- git clone https://github.com/jpralves/TokenProcessor
+  - cd
   - if [[ "$BOARD" =~ "esp8266:esp8266:" ]]; then
       arduino --pref "boardsmanager.additional.urls=http://arduino.esp8266.com/stable/package_esp8266com_index.json" --install-boards esp8266:esp8266;
       arduino --pref "boardsmanager.additional.urls=" --save-prefs;
