@@ -29,8 +29,8 @@
 // Setup config file struct with default values 
 struct _config {
   boolean ap_mode = true;
-  String ssid = "altBot";
-  String password = "altBot";
+  char *ssid = "altBot";
+  char *password = "altBot";
   byte  ip[4];
   byte  netmask[4];
   byte  gateway[4];
@@ -63,13 +63,13 @@ void setup() {
   // Connect to WiFi network
   if (config.ap_mode) {
     WiFi.mode(WIFI_AP);
-    WiFi.softAP(config.ssid.c_str(), config.password.c_str());
+    WiFi.softAP(config.ssid, "");
     IPAddress myIP = WiFi.softAPIP();
     debug_print ("AP IP address: ");
     debug_println (myIP);
   } else {
     // Station, access to router
-    WiFi.begin(config.ssid.c_str(), config.password.c_str());
+    WiFi.begin(config.ssid, config.password);
   
     while (WiFi.status() != WL_CONNECTED) {
       debug_blink();
