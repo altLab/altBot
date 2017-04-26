@@ -8,6 +8,14 @@ env:
     - SOURCE="motor_test" BOARD="esp8266:esp8266:nodemcuv2:FlashSize=4M3M,CpuFrequency=80"
     - SOURCE="pin_test"   BOARD="esp8266:esp8266:nodemcuv2:FlashSize=4M3M,CpuFrequency=80"
 before_install:
+- |
+     if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
+       TRAVIS_COMMIT_RANGE="FETCH_HEAD...$TRAVIS_BRANCH"
+     fi
+     git diff --name-only $TRAVIS_COMMIT_RANGE | grep -qvE '(\.md$)|(^(docs|examples))/' || {
+       echo "Only docs were updated, stopping build process."
+       exit
+     }
   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_1.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :1 -ac -screen 0 1280x1024x16"
   - sleep 3
   - export DISPLAY=:1.0
