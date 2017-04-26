@@ -9,5 +9,5 @@ ESP-8266 Wifi MCU, junk bin parts, and some digitally fabricated parts.
 
 ## BOM
 
-The BOM (Bill of materials) is avaliable in the [BOM file](docs/BOM.md).
+The BOM (Bill of materials) is avaliable in the [BOM file](doc/BOM.md).
 
