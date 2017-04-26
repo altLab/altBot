@@ -5,10 +5,18 @@
 // Comment this definition to compile out debugging info
 #define ALTBOT_DEBUG
 
-#ifdef ALTBOT_DEBUG
+inline void debug_blink() {
+  digitalWrite(ESP_LED, LOW);
+  delay(100);
+  digitalWrite(ESP_LED, HIGH);
+  delay(400);
+}
 
+
+#ifdef ALTBOT_DEBUG
 // Initialize debugging info
 inline void debug_init() {
+
   Serial.print("\n");
   Serial.setDebugOutput(true);
   pinMode(ESP_LED, OUTPUT);
@@ -26,12 +34,6 @@ inline void debug_println (const Printable &msg) {
   Serial.println (msg);
 }
 
-inline void debug_blink() {
-  digitalWrite(ESP_LED, LOW);
-  delay(100);
-  digitalWrite(ESP_LED, HIGH);
-  delay(400);
-}
 
 // Print out internal ESP device info
 // Adapted from: https://github.com/NicHub/ouilogique-ESP8266-Arduino/blob/master/get-esp8266-info/get-esp8266-info.ino 
@@ -90,5 +92,16 @@ String debug_get_mac_addr() {
   sprintf(macStr, "%02X:%02X:%02X:%02X:%02X:%02X", mac[0],  mac[1], mac[2], mac[3], mac[4], mac[5]);
   return  String(macStr);
 }
+#else
+inline void debug_print (const String &msg) {
+}
 
+inline void debug_println (const String &msg) {
+}
+
+inline void debug_println (const Printable &msg) {
+}
+
+void debug_esp_info() {
+}
 #endif // ALTBOT_DEBUG
