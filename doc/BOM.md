@@ -26,4 +26,9 @@
 ## Others
 
 - Caster Wheel
+
+![casterWheel](casterWheel.jpg)
+
 - Zip ties
+
+![zipTies](zipTies.jpg)
