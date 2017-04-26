@@ -17,7 +17,7 @@ before_install:
   - mkdir -p ~/Arduino/libraries
   - git clone https://github.com/jpralves/crc16.git ~/Arduino/libraries/crc16
   - git clone https://github.com/jpralves/keyvalues.git ~/Arduino/libraries/keyvalues
-  #- git clone https://github.com/jpralves/TokenProcessor ~/Arduino/libraries/TokenProcessor
+  - git clone https://github.com/jpralves/TokenProcessor.git ~/Arduino/libraries/TokenProcessor
   - if [[ "$BOARD" =~ "esp8266:esp8266:" ]]; then
       arduino --pref "boardsmanager.additional.urls=http://arduino.esp8266.com/stable/package_esp8266com_index.json" --install-boards esp8266:esp8266;
       arduino --pref "boardsmanager.additional.urls=" --save-prefs;
