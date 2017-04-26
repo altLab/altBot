@@ -1,0 +1,121 @@
+<html>
+<head>
+  <title>altBot Web Control - Joystick</title>
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="sprites.min.css" media="all">
+  <style>
+  body {
+			overflow	: hidden;
+			padding		: 0;
+			margin		: 0;
+		}    
+#info {
+			position	: absolute;
+			top		: 0px;
+			width		: 100%;
+			padding		: 5px;
+			text-align	: center;
+		}
+		#info a {
+			color		: #66F;
+			text-decoration	: none;
+		}
+		#info a:hover {
+			text-decoration	: underline;
+		}
+    #container {
+			width		: 100%;
+			height		: 100%;
+			overflow	: hidden;
+			padding		: 0;
+			margin		: 0;
+			-webkit-user-select	: none;
+			-moz-user-select	: none;
+	}
+  </style>
+</head>
+<body>
+<div id="container">
+<div id='info'>
+  <table style="border: none; margin-left: auto; margin-right: auto;" class="ui-widget">
+        <tr><td><div style="text-align: center;">
+        <a href="http://altlab.org/"><span class="sprite sprite-altlab"></span></a> <a href="http://arduino.cc/"><span class="sprite sprite-arduino"></span></a> <a href="http://opensource.org/"><span class="sprite sprite-opensource"></span></a> <a href="http://www.nodemcu.com/"><span class="sprite sprite-nodemcu"></span></a> <a href="https://en.wikipedia.org/wiki/HTML5"><span class="sprite sprite-html5"></span></a></div></td></tr>
+        <tr height=400><td width=600>
+          <span id="result"></span>
+          </td></tr>
+        <tr><td><div style="text-align: center">
+        <span lang="en">Developed by </span><a href="http://jpralves.net"><span class="sprite sprite-link-icon" style="vertical-align: middle; border: none"></span>Jo&atilde;o Alves</a></div></td></tr>
+    </table>
+  </div></div>
+<script src="virtualjoystick.js"></script>
+<script>
+  console.log("touchscreen is", VirtualJoystick.touchScreenAvailable() ? "available" : "not available");
+	
+  var joystick	= new VirtualJoystick({
+				container	: document.getElementById('container'),
+				mouseSupport	: true,
+			});
+			joystick.addEventListener('touchStart', function(){
+				console.log('down')
+			});
+			joystick.addEventListener('touchEnd', function(){
+				console.log('up')
+			});
+
+			setInterval(function(){
+				var outputEl	= document.getElementById('result');
+        if (Math.abs(Math.sqrt(Math.pow(joystick.deltaX(),2)+Math.pow(joystick.deltaY(),2))) != 0) {
+				outputEl.innerHTML	= '<b>Result:</b> '
+					+ ' dx:'+joystick.deltaX()
+					+ ' dy:'+-joystick.deltaY()
+					+ (joystick.right()	? ' right'	: '')
+					+ (joystick.up()	? ' up'		: '')
+					+ (joystick.left()	? ' left'	: '')
+					+ (joystick.down()	? ' down' 	: '')
+          + (' velocidade: ' + Math.sqrt(Math.pow(joystick.deltaX(),2)+Math.pow(joystick.deltaY(),2))
+        );
+			sp = Math.sqrt(Math.pow(joystick.deltaX(),2)+Math.pow(joystick.deltaY(),2))*1023/250;
+			
+			if (sp>1000) { sp = 1000;}
+        console.log(joystick.deltaX()*joystick.deltaY());
+		if (joystick.right()) {
+			move('r',sp);
+		}
+		if (joystick.left()) {
+			move('l',sp);
+		}
+		if (joystick.up()) {
+			move('f',sp);
+		}
+		if (joystick.down()) {
+			move('b',sp);
+		}
+			
+        //console.log(Math.atan2(-joystick.deltaY(), joystick.deltaX()))
+        }
+			}, 1/30 * 1000);
+	
+  var lastMove = 0;
+
+  function move_car(left, right) {
+    var now = Date.now();
+    if (lastMove + 200 < now) {  // orig. 200 ms
+      lastMove = now;
+      var request = new XMLHttpRequest();
+      // if direction is opposite, change sign of +left and +right
+      request.open("GET", "/engines?left=" + Math.round(-left) + "&right=" + Math.round(-right), true);
+      request.send(null);
+    }
+  }
+	
+  function move(dir, speed=1000) {
+    if (dir === "f"){ move_car(-speed, -speed);}
+    if (dir === "b"){ move_car(speed, speed);}
+    if (dir === "l"){ move_car(speed, -speed);}
+    if (dir === "r"){ move_car(-speed, speed);}
+    return false; // no further processing
+  }
+
+</script>
+</body>
+</html>
