@@ -2,11 +2,11 @@ language: generic
 sudo: false
 env:
   global:
-    - IDE_VERSION=1.8.1
+    - IDE_VERSION=1.8.2
   matrix:
-    - SOURCE="control" BOARD="esp8266:esp8266:nodemcuv2:FlashSize=4M3M,CpuFrequency=80"
+    - SOURCE="control"    BOARD="esp8266:esp8266:nodemcuv2:FlashSize=4M3M,CpuFrequency=80"
     - SOURCE="motor_test" BOARD="esp8266:esp8266:nodemcuv2:FlashSize=4M3M,CpuFrequency=80"
-    - SOURCE="pin_test" BOARD="esp8266:esp8266:nodemcuv2:FlashSize=4M3M,CpuFrequency=80"
+    - SOURCE="pin_test"   BOARD="esp8266:esp8266:nodemcuv2:FlashSize=4M3M,CpuFrequency=80"
 before_install:
   - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_1.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :1 -ac -screen 0 1280x1024x16"
   - sleep 3
@@ -29,7 +29,7 @@ install:
 #  - arduino --board esp8266:esp8266:nodemcuv2 --save-prefs
 #  - arduino --pref "compiler.warning_level=all" --save-prefs
 script:
-  - arduino -v --verbose-build --verify --board $BOARD $PWD/firmware/$SOURCE/$SOURCE.ino;
+  - arduino -v --verbose-build --verify --board $BOARD $PWD/firmware/$SOURCE/$SOURCE.ino
 notifications:
   email:
 #    recipients:
