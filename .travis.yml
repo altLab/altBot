@@ -8,7 +8,7 @@ env:
     - SOURCE="motor_test" BOARD="esp8266:esp8266:nodemcuv2:FlashSize=4M3M,CpuFrequency=80"
     - SOURCE="pin_test"   BOARD="esp8266:esp8266:nodemcuv2:FlashSize=4M3M,CpuFrequency=80"
 before_install:
-- |
+  - |
      if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
        TRAVIS_COMMIT_RANGE="FETCH_HEAD...$TRAVIS_BRANCH"
      fi
